@@ -1,9 +1,9 @@
 var sets = {
   sbu1: {
     nodes: [
-      { masterId: "r", depth: 0, style: 'root' },
-      { masterId: "a", depth: 1, style: 'root' },
-      { masterId: "b", depth: 1, style: 'root' }
+      { masterId: "r", style: 'root' },
+      { masterId: "a", style: 'root' },
+      { masterId: "b", style: 'root' }
     ],
     links: [
       { sourceId: "r", targetId: "a" },
@@ -96,8 +96,7 @@ var sets = {
       },
       {
         "sourceId":"r",
-        "targetId":"c",
-        "value":1
+        "targetId":"c"
       },
       {
         "sourceId":"c",
@@ -128,6 +127,51 @@ var sets = {
       { sourceId: "b", targetId: "c" },
       { sourceId: "b", targetId: "d" },
       { sourceId: "c", targetId: "e" }
+    ]
+  },
+  set5: {
+    nodes: [
+      { masterId: "r", style: "root" },
+      { masterId: "a", style: "simple" },
+      { masterId: "b", style: "simple" },
+      { masterId: "c", style: "rich" },
+      { masterId: "d", style: "rich" },
+      { masterId: "e", style: "rich" },
+      { masterId: "f", style: "rich" },
+      { masterId: "g", style: "rich" },
+      { masterId: "h", style: "rich" },
+      { masterId: "i", style: "rich" },
+      { masterId: "j", style: "rich" },
+      { masterId: "k", style: "rich" },
+      { masterId: "l", style: "rich" },
+      { masterId: "m", style: "rich" },
+      { masterId: "n", style: "rich" },
+      { masterId: "o", style: "rich" },
+      { masterId: "p", style: "rich" },
+      { masterId: "q", style: "rich" },
+      { masterId: "s", style: "rich" },
+      { masterId: "t", style: "rich" }
+    ],
+      links : [
+      { sourceId: "r", targetId: "a" },
+      { sourceId: "r", targetId: "d" },
+      { sourceId: "r", targetId: "n" },
+      { sourceId: "r", targetId: "p" },
+      { sourceId: "a", targetId: "b" },
+      { sourceId: "a", targetId: "c" },
+      { sourceId: "d", targetId: "e" },
+      { sourceId: "d", targetId: "k" },
+      { sourceId: "e", targetId: "f" },
+      { sourceId: "e", targetId: "i" },
+      { sourceId: "f", targetId: "g" },
+      { sourceId: "f", targetId: "h" },
+      { sourceId: "i", targetId: "j" },
+      { sourceId: "k", targetId: "l" },
+      { sourceId: "l", targetId: "m" },
+      { sourceId: "n", targetId: "o" },
+      { sourceId: "p", targetId: "q" },
+      { sourceId: "q", targetId: "s" },
+      { sourceId: "q", targetId: "t" }
     ]
   }
 };
