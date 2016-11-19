@@ -1,8 +1,18 @@
 function graphDisplayService() {
+
+  /// The algorithm implemented here was converted to ES6 from the following article
+  /// "Improving Walker's algorithm to run in linear time"
+  /// http://dirk.jivas.de/papers/buchheim02improving.pdf
+  /// (pseudo code at the end)
+  /// This algorithm is O(n) with 2 passes (bottom up recursive then modifiers applications)
+  /// <!> Don't forget your Doliprane <!>
+
   var context = {},
-    nodes = [], // nodes data provided by API
+    nodes = [], // nodes data provided from outside. You must provide a way to get the root node and an unique Id getter.
+    rootNodeSelector = d => d.style === 'root',
+    nodeUniqueIdentifierSelector = d => d.masterId,
+
     links = [], // links data provided by API
-    maxDepth = 0,
     nexts = [],
     distance = 1,
     layout = "horizontal"; // set to "horizontal" if needed
@@ -19,22 +29,45 @@ function graphDisplayService() {
     return context;
   };
 
-  context.layout = function (autoscale) {
+  context.layout = function () {
     prepareNodes();
     prepareLinks();
-    var rootNode = nodes.find(d => d.style === 'root');
+    var rootNode = nodes.find(rootNodeSelector);
     var r = convertToTree(rootNode);
     firstWalk(r);
     secondWalk(r, r.prelimX);
     return context;
   };
 
+  function prepareNodes() {
+    var nodeIndex = 0;
+    nodes.forEach(function (node) {
+      node.nodeIndex = nodeIndex;
+      node.outgoingLinks = [];
+      node.incomingLinks = [];
+      nodeIndex++;
+    });
+  }
+
+  function prepareLinks() {
+    links.forEach(function (link) {
+      link.source = nodes.find(function (node) {
+        return nodeUniqueIdentifierSelector(node) === link.sourceId;
+      });
+      link.target = nodes.find(function (node) {
+        return nodeUniqueIdentifierSelector(node) === link.targetId;
+      });
+
+      link.source.outgoingLinks.push(link);
+    });
+  }
+
   function convertToTree(node, depth, parent, familyNumber) {
     if (typeof depth === 'undefined') depth = 0;
     if (typeof familyNumber === 'undefined') familyNumber = 1;
     var i = 1;
     var tree = {
-      id: node.masterId,
+      id: nodeUniqueIdentifierSelector(node),
       mod: 0,
       shift: 0,
       change: 0,
@@ -45,7 +78,7 @@ function graphDisplayService() {
       leftMostSibling: null,
       number: familyNumber,
       data: {
-        id: node.masterId,
+        id: nodeUniqueIdentifierSelector(node),
         nodeIndex: node.nodeIndex
       }
     };
@@ -60,7 +93,7 @@ function graphDisplayService() {
   }
 
   function firstWalk(v) {
-    // a bottom up pass to compute a preliminary x value for all the nodes
+    // a bottom up pass to compute a preliminary x (prelimX) value for all the nodes
     if (v.children.length === 0) { // if v is a leaf
       if (getLeftMostSibling(v)) {
         v.prelimX = getLeftSibling(v).prelimX + distance;
@@ -89,12 +122,14 @@ function graphDisplayService() {
   }
 
   function apportion(v, defaultAncestor) {
+    /// This step compares two subtrees v and its left sibling w, using their contour and sets some offsets to be sumed up in the secondWalk
+    /// The complexity comes essentially from
     var w = getLeftSibling(v);
     if (w) {
-      var vri = v;
-      var vro = v;
-      var vli = w;
-      var vlo = getLeftMostSibling(v);
+      var vri = v; // right inner : represents the inner contour of the right subtree
+      var vro = v; // right outer : represents the outer contour of the right subtree
+      var vli = w; // left inner : represents the inner contour of the left subtree
+      var vlo = getLeftMostSibling(v); // left outer : represents the outer contour of the left subtree
       sri = vri.mod;
       sro = vro.mod;
       sli = vli.mod;
@@ -232,33 +267,8 @@ function graphDisplayService() {
     return v.leftMostSibling;
   }
 
-  function prepareNodes() {
-    var nodeIndex = 0;
-    nodes.forEach(function (node) {
-      node.nodeIndex = nodeIndex;
-      node.outgoingLinks = [];
-      node.incomingLinks = [];
-      nodeIndex++;
-      maxDepth = Math.max(maxDepth, node.depth);
-    });
-  }
-
   function areEqualNodes(v, w) {
     return v.data.id === w.data.id;
-  }
-
-  function prepareLinks() {
-    links.forEach(function (link) {
-      link.source = nodes.find(function (node) {
-        return node.masterId === link.sourceId;
-      });
-      link.target = nodes.find(function (node) {
-        return node.masterId === link.targetId;
-      });
-
-      link.source.outgoingLinks.push(link);
-      link.target.incomingLinks.push(link);
-    });
   }
 
   return context;
