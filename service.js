@@ -106,7 +106,7 @@ function graphDisplayService() {
       for (var i = 0; i < v.children.length; i++) {
         w = v.children[i];
         firstWalk(w);
-        defaultAncestor = apportion(w, defaultAncestor);
+        apportion(w, defaultAncestor);
       }
       executeShifts(v);
       // midpoint is at the middle of leftmost and rightmost children of v
@@ -164,6 +164,14 @@ function graphDisplayService() {
     return defaultAncestor;
   }
 
+  function ancestor(vli, v, defaultAncestor) {
+    if (areSiblings(vli.ancestor, v)) {
+      return vli.ancestor;
+    } else {
+      return defaultAncestor;
+    }
+  }
+
   function moveSubtree(wl, wr, shift) {
     var substrees = wr.number - wl.number;
     wr.change = wr.change - shift / substrees;
@@ -186,13 +194,6 @@ function graphDisplayService() {
     }
   }
 
-  function ancestor(vli, v, defaultAncestor) {
-    if (areSiblings(vli.ancestor, v)) {
-      return vli.ancestor;
-    } else {
-      return defaultAncestor;
-    }
-  }
 
   function secondWalk(v, m) {
     v.x = v.prelimX + m;
