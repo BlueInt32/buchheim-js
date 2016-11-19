@@ -19,6 +19,11 @@
   shape-rendering: crispEdges;
   vector-effect: non-scaling-stroke;
 }
+text {
+  fill: #134f81;
+  font-weight: bold;
+  font-family: Calibri;
+}
 
 </style>
 <body>
@@ -104,6 +109,15 @@ graphContext.nodes(nodes).links(links).layout();
       .append("title")
       .text(d => d.nodeIndex)
       .call(drag);
+  container.append("g")
+      .attr("class", "dot")
+    .selectAll("text")
+      .data(graphContext.nodes())
+    .enter().append("text")
+      .attr("text-anchor", "middle")
+      .attr("x", function(d) { return scaleX(d.x); })
+      .attr("y", function(d) { return scaleY(d.y) + 4; })
+      .text(d => d.masterId);
 
 function scaleX(x) {
   return x * 50 + 400;
