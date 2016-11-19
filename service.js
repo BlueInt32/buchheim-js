@@ -15,7 +15,8 @@ function graphDisplayService() {
     links = [], // links data provided by API
     nexts = [],
     distance = 1,
-    layout = "horizontal"; // set to "horizontal" if needed
+    layout = "horizontal", // set to "horizontal" if needed
+    minX = 0, minY = 0, maxX = 0, maxY = 0;
 
   context.nodes = function (_) {
     if (!arguments.length) return nodes;
@@ -217,8 +218,9 @@ function graphDisplayService() {
       nodes[v.data.nodeIndex].x = x;
     } else {
       nodes[v.data.nodeIndex].y = x;
-
     }
+    maxX = Math.max(maxX, x);
+    minX = Math.min(minX, x);
   }
 
   function setNodeY(v, y) {
@@ -227,6 +229,8 @@ function graphDisplayService() {
     } else {
       nodes[v.data.nodeIndex].x = y;
     }
+    maxY = Math.max(maxY, y);
+    minY = Math.min(minY, y);
   }
 
   function nextLeft(v) {
