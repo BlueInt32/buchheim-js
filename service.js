@@ -4,7 +4,8 @@ function graphDisplayService() {
     links = [], // links data provided by API
     maxDepth = 0,
     nexts = [],
-    distance = 1;
+    distance = 1,
+    layout = "horizontal"; // set to "horizontal" if needed
 
   context.nodes = function (_) {
     if (!arguments.length) return nodes;
@@ -176,11 +177,20 @@ function graphDisplayService() {
   }
 
   function setNodeX(v, x) {
-    nodes[v.data.nodeIndex].x = x;
+    if (layout === "vertical") {
+      nodes[v.data.nodeIndex].x = x;
+    } else {
+      nodes[v.data.nodeIndex].y = x;
+
+    }
   }
 
   function setNodeY(v, y) {
-    nodes[v.data.nodeIndex].y = y;
+    if (layout === "vertical") {
+      nodes[v.data.nodeIndex].y = y;
+    } else {
+      nodes[v.data.nodeIndex].x = y;
+    }
   }
 
   function nextLeft(v) {
@@ -247,7 +257,7 @@ function graphDisplayService() {
       });
 
       link.source.outgoingLinks.push(link);
-        link.target.incomingLinks.push(link);
+      link.target.incomingLinks.push(link);
     });
   }
 
