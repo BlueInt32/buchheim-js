@@ -69,6 +69,7 @@ function graphDisplayService() {
     var i = 1;
     var tree = {
       id: nodeUniqueIdentifierSelector(node),
+      title: node.title,
       mod: 0,
       shift: 0,
       change: 0,
